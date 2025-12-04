@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-22 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "part_name",
+  "material_source",
+  "condition",
+  "column_break_1",
+  "qty_formula",
+  "length_formula",
+  "width_formula"
+ ],
+ "fields": [
+  {
+   "fieldname": "part_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Part Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "material_source",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Material Source",
+   "options": "Sheet\nRound Pipe\nRectangle Pipe\nAngle\nFlat\nSquare Rod\nWasher",
+   "reqd": 1
+  },
+  {
+   "fieldname": "condition",
+   "fieldtype": "Code",
+   "label": "Condition (Python Expression)",
+   "options": "Python",
+   "description": "e.g. inputs.get('pan_support_type') == 'Ring'"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "qty_formula",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Qty Formula",
+   "reqd": 1,
+   "description": "Python expression using 'L', 'W', 'H' etc. e.g. '4' or '(L/500)+2'"
+  },
+  {
+   "fieldname": "length_formula",
+   "fieldtype": "Data",
+   "label": "Length Formula (mm)",
+   "reqd": 1,
+   "description": "e.g. 'H - 150'"
+  },
+  {
+   "fieldname": "width_formula",
+   "fieldtype": "Data",
+   "label": "Width Formula (mm)",
+   "description": "Required for Sheet materials"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-22 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Rajerpapp",
+ "name": "Config Component",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
