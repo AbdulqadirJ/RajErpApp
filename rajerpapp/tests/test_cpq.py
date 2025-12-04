@@ -102,11 +102,11 @@ class TestStoveCPQ(unittest.TestCase):
 		self.assertAlmostEqual(result['weight'], 21.51, places=1)
 
 		# Verify Stock Qty logic
-		for line in result['details']:
-			if line['part'] == "Legs":
+		for line in result["details"]:
+			if line["part"] == "Legs":
 				# Should be in Meters
 				# 4 legs * 0.95m = 3.8m
-				self.assertAlmostEqual(line['stock_qty'], 3.8, places=2)
-			if line['part'] == "Top Sheet":
+				self.assertAlmostEqual(line["stock_qty"], 3.8, places=2)
+			if line["part"] == "Top Sheet":
 				# Should be in Kg
-				self.assertAlmostEqual(line['stock_qty'], 15.81, places=1)
+				self.assertAlmostEqual(line["stock_qty"], 15.81, places=1)

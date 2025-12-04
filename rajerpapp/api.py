@@ -34,7 +34,7 @@ def calculate_estimate(item_code, inputs, material_set_name):
 		try:
 			return frappe.safe_eval(formula, context)
 		except Exception as e:
-			frappe.throw(f"Error evaluating formula '{formula}': {str(e)}")
+			frappe.throw(f"Error evaluating formula '{formula}': {e!s}")
 
 	for component in logic.components:
 		# Check Condition

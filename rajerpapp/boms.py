@@ -70,5 +70,5 @@ def create_custom_bom(doc, method):
 				}).insert(ignore_permissions=True)
 
 			except Exception as e:
-				frappe.log_error(f"Error creating Custom BOM for SO {doc.name}: {str(e)}")
+				frappe.log_error(f"Error creating Custom BOM for SO {doc.name}: {e!s}")
 				frappe.msgprint(f"Warning: Failed to generate custom BOM for {item.item_code}. Check Error Log.")
