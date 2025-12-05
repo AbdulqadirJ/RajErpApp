@@ -4,11 +4,11 @@ name: CI
 on:
   push:
     branches:
-      - develop
+      - main  # or any other branch you want to trigger on push
   pull_request:
 
 concurrency:
-  group: develop-rajerpapp-${{ github.event.number }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
