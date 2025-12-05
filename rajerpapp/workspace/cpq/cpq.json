@@ -1,0 +1,75 @@
+{
+ "charts": [],
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"Commercial Stove Configurator\",\"level\":4,\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Stove Configurator\",\"col\":4}},{\"type\":\"header\",\"data\":{\"text\":\"Setup\",\"level\":4,\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Master Data\",\"col\":4}}]",
+ "creation": "2024-05-22 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "percent",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_standard": 1,
+ "label": "CPQ",
+ "links": [
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stove Configurator",
+   "link_count": 0,
+   "link_to": "stove_builder",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stove Material Set",
+   "link_count": 0,
+   "link_to": "Stove Material Set",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Product Config Logic",
+   "link_count": 0,
+   "link_to": "Product Config Logic",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2024-05-22 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Rajerpapp",
+ "name": "CPQ",
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "roles": [],
+ "sequence_id": 1,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "format": "",
+   "icon": "grid",
+   "idx": 1,
+   "label": "Stove Configurator",
+   "link_to": "/stove_builder",
+   "restrict_to_domain": "",
+   "stats_filter": "{}",
+   "type": "URL",
+   "url": "/stove_builder"
+  }
+ ],
+ "title": "CPQ"
+}

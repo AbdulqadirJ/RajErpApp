@@ -1,0 +1,229 @@
+<!-- rajerpapp/www/stove_builder.html -->
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="container my-5">
+    <h3>Commercial Stove Configurator</h3>
+    <div class="row" id="configurator-app">
+        <div class="col-md-6">
+            <form id="stove-form">
+                <div class="form-group">
+                    <label>Product Type</label>
+                    <select class="form-control" id="item_code" name="item_code" required>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Material Grade</label>
+                    <select class="form-control" id="material_set" name="material_set" required>
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+
+                <hr>
+                <h5>Dimensions (mm)</h5>
+                <div class="row">
+                    <div class="col">
+                        <label>Length</label>
+                        <input type="number" class="form-control inputs" name="L" value="1000">
+                    </div>
+                    <div class="col">
+                        <label>Width</label>
+                        <input type="number" class="form-control inputs" name="W" value="600">
+                    </div>
+                    <div class="col">
+                        <label>Height</label>
+                        <input type="number" class="form-control inputs" name="H" value="850">
+                    </div>
+                </div>
+
+                <hr>
+                <h5>Configuration</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>No. of Burners</label>
+                        <input type="number" class="form-control inputs" name="burners" value="2">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Leg Count</label>
+                        <input type="number" class="form-control inputs" name="leg_count" value="4">
+                    </div>
+                    <!-- Extensible: Add more fields here as needed -->
+                     <div class="col-md-12 mt-2">
+                        <label>Pan Support Type</label>
+                        <select class="form-control inputs" name="pan_support_type">
+                            <option value="Ring">Ring</option>
+                            <option value="Patti">Patti</option>
+                            <option value="Square">Square</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="button" class="btn btn-primary" onclick="calculate()">Calculate Price</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Estimate</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Total Weight:</td>
+                            <td class="text-right"><span id="est-weight">0</span> kg</td>
+                        </tr>
+                        <tr>
+                            <td>Estimated Price:</td>
+                            <td class="text-right">₹ <span id="est-price">0</span></td>
+                        </tr>
+                    </table>
+
+                    <button id="btn-add-quote" class="btn btn-success btn-block" onclick="addToQuote()" disabled>
+                        Add to Quote
+                    </button>
+
+                    <hr>
+                    <small class="text-muted">Breakdown:</small>
+                    <div id="bom-details" style="max-height: 300px; overflow-y: auto; font-size: 0.85rem;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCalculation = null;
+
+    frappe.ready(function() {
+        // Load Options
+        frappe.call({
+            method: 'frappe.client.get_list',
+            args: {
+                doctype: 'Product Config Logic',
+                fields: ['item_code']
+            },
+            callback: function(r) {
+                let options = "";
+                r.message.forEach(d => {
+                    options += `<option value="${d.item_code}">${d.item_code}</option>`;
+                });
+                $('#item_code').html(options);
+            }
+        });
+
+        frappe.call({
+            method: 'frappe.client.get_list',
+            args: {
+                doctype: 'Stove Material Set',
+                fields: ['name']
+            },
+            callback: function(r) {
+                let options = "";
+                r.message.forEach(d => {
+                    options += `<option value="${d.name}">${d.name}</option>`;
+                });
+                $('#material_set').html(options);
+            }
+        });
+    });
+
+    function getInputs() {
+        let inputs = {};
+        $('.inputs').each(function() {
+            let val = $(this).val();
+            // Try parse number
+            if(!isNaN(val) && val !== "") {
+                val = parseFloat(val);
+            }
+            inputs[$(this).attr('name')] = val;
+        });
+        return inputs;
+    }
+
+    function calculate() {
+        let item_code = $('#item_code').val();
+        let material_set = $('#material_set').val();
+        let inputs = getInputs();
+
+        if(!item_code || !material_set) return;
+
+        frappe.call({
+            method: 'rajerpapp.api.calculate_estimate',
+            args: {
+                item_code: item_code,
+                inputs: inputs,
+                material_set_name: material_set
+            },
+            callback: function(r) {
+                if(r.message) {
+                    currentCalculation = r.message;
+                    $('#est-weight').text(r.message.weight.toFixed(2));
+                    $('#est-price').text(r.message.price.toFixed(2));
+
+                    let html = "<table class='table table-sm'><thead><tr><th>Part</th><th>Size</th><th>Qty</th></tr></thead><tbody>";
+                    r.message.details.forEach(d => {
+                        html += `<tr><td>${d.part}</td><td>${d.cut_size}</td><td>${d.qty}</td></tr>`;
+                    });
+                    html += "</tbody></table>";
+                    $('#bom-details').html(html);
+
+                    $('#btn-add-quote').prop('disabled', false);
+                }
+            }
+        });
+    }
+
+    function addToQuote() {
+        if(!currentCalculation) return;
+
+        let item_code = $('#item_code').val();
+        let inputs = getInputs();
+        let material_set = $('#material_set').val();
+
+        let desc = `Custom Commercial Stove
+Size: ${inputs.L}x${inputs.W}x${inputs.H}mm
+Material: ${material_set}
+Est Weight: ${currentCalculation.weight.toFixed(2)}kg`;
+
+        // Store configuration in a hidden way or simple JSON
+        let config_data = {
+            inputs: inputs,
+            material_set: material_set,
+            details: currentCalculation
+        };
+
+        // Use standard Quick Entry or route to Quotation
+        frappe.call({
+            method: 'frappe.client.insert',
+            args: {
+                doc: {
+                    doctype: 'Quotation',
+                    transaction_date: frappe.datetime.get_today(),
+                    party_name: 'Customer', // Needs valid customer or prompt
+                    items: [
+                        {
+                            item_code: item_code,
+                            qty: 1,
+                            rate: currentCalculation.price,
+                            description: desc,
+                            configuration_json: JSON.stringify(config_data)
+                        }
+                    ]
+                }
+            },
+            callback: function(r) {
+                if(r.message) {
+                    frappe.msgprint("Quotation Created: " + r.message.name);
+                    // Redirect to Quotation
+                    window.location.href = `/app/quotation/${r.message.name}`;
+                }
+            },
+            error: function(r) {
+                 frappe.msgprint("Could not create Quotation. Ensure a default 'Customer' exists or logic is updated to prompt user.");
+            }
+        });
+    }
+</script>
+{% endblock %}
